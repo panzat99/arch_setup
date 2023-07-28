@@ -1,0 +1,29 @@
+Steps from arch installguide but more compressed:
+
+1. Set keyboard layout: loadkeys de-latin1
+2. Check for EFI: cat /sys/firmware/efi/fw_platform_size
+3. Partition drive and set one partition to boot
+   1. parted /dev/sdX
+   2. (parted) mklabel gpt/ msdos
+   3. (parted) mkpart primary ext4 1MiB 100% (example)
+   4. Create more partitions if needed
+4. Format drives with correct file system
+5. Mount drive into /mnt
+6. Install packages into /mnt: pacstrap -K /mnt base nano linux linux-firmware [...]
+7. Generate fstab: genfstab -U/-L /mnt >> /mnt/etc/fstab
+8. Change into root in /mnt: arch-chroot /mnt
+9. Set time: ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+10. Set locales: edit /etc/locale.gen and uncomment en_US.UTF-8 UTF-8, locale-gen
+11. Set language: touch /etc/locale.conf, cat "LANG=en_US.UTF-8" > /etc/locale.conf
+12. Set keyboard: touch /etc/vconsole.conf, cat "KEYMAP=de-latin1" > /etc/vconsole.conf
+13. Set hostname: touch /etc/hostname, cat "<hostname>" > /etc/hostname
+14. Set root password: passwd
+15. Install packages: pacman -s grub networkmanager network-manager-applet dosfstools dialog os-prober wireless_tools wpa_supplicant base-devel yakuake plasma qt5
+16. Install bootloader: grub-install [FLAGS] [DESTINATION]
+17. Generate grub config files
+ --- reboot ---
+18. Create user: useradd -m <user>
+19. Create sudo group and add user to it: groupadd sudo; usermod -aG sudo <user>
+20. Edit sudoers file in /etc/sudoers
+21. Set user password: passwd <user>
+22. Activate networkmanager and plasma: systemctl enable/start NetworkManager.service, systemctl enable/start sddm
